@@ -3,12 +3,12 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour {
     private const float Gravity = -9.81f;
-    [SerializeField] private InputActionReference moveInput;
+    [SerializeField] private InputActionReference moveInput, jumpInput;
     [SerializeField] private Animator animator;
     [SerializeField] [Range(1, 10)] private float speed, maxHeight;
     private CharacterController _controller;
-    private bool _isMoving;
     private InputAction MoveAction => moveInput.action;
+    private InputAction JumpAction => jumpInput.action;
     private Vector2 InputValue => MoveAction.ReadValue<Vector2>();
 
     private void Awake() {
@@ -22,14 +22,13 @@ public class PlayerController : MonoBehaviour {
 
     private void OnEnable() {
         MoveAction.Enable();
-        MoveAction.started += OnMoveActionStarted;
-        MoveAction.canceled += OnMoveActionCanceled;
+        JumpAction.Enable();
+        JumpAction.started += context => animator.SetTrigger("Jump");
     }
 
     private void OnDisable() {
         MoveAction.Disable();
-        MoveAction.started -= OnMoveActionStarted;
-        MoveAction.canceled -= OnMoveActionCanceled;
+        JumpAction.Disable();
     }
 
     private Vector3 GetMovement() {
@@ -39,13 +38,5 @@ public class PlayerController : MonoBehaviour {
     private void BindAnimation() {
         animator.SetFloat("X", InputValue.x);
         animator.SetFloat("Y", InputValue.y);
-    }
-
-    private void OnMoveActionStarted(InputAction.CallbackContext obj) {
-        _isMoving = true;
-    }
-
-    private void OnMoveActionCanceled(InputAction.CallbackContext obj) {
-        _isMoving = false;
     }
 }
