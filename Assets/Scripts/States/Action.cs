@@ -1,13 +1,15 @@
 ﻿public class Action : State {
-    protected override void Enter() {
+    public Action(AIController owner) : base(owner) { }
+
+    public override void Enter() {
         
     }
 
-    protected override void Do() {
+    public override void Do() {
         throw new System.NotImplementedException();
     }
 
-    protected override void Exit() 
+    public override void Exit(State newState) 
     {
         throw new System.NotImplementedException();
     }
